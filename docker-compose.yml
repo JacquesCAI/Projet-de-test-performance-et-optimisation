@@ -1,0 +1,36 @@
+version: '3.6'
+services:
+    nginx:
+        build: docker/nginx
+        ports:
+            - '3000:80'
+        volumes:
+            - './app:/usr/share/nginx/html'
+    php-fpm:
+        build: docker/php
+        volumes:
+            - './app:/usr/share/nginx/html'
+    adminer:
+        image: 'adminer:4.7'
+        ports:
+            - '3001:8080'
+    mariadb:
+        image: 'mariadb:10.3'
+        environment:
+            - MYSQL_DATABASE=laravel
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=password
+            - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    composer:
+        image: 'composer:1.8'
+        command: install
+        volumes:
+            - './app:/app'
+    node:
+        image: "node:14.16.0"
+        working_dir: /home/node/app
+        environment:
+            - NODE_ENV=development
+        volumes:
+            - ./app:/home/node/app
+        command: "npm start"
