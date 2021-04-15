@@ -21,7 +21,6 @@ class CreateVaccinsTable extends Migration
             $table->integer('nb_ucd');
             $table->integer('nb_doses');
             $table->date('date');
-            $table->timestamps();
         });
     }
 

@@ -10,10 +10,13 @@ services:
         build: docker/php
         volumes:
             - './app:/usr/share/nginx/html'
-    adminer:
-        image: 'adminer:4.7'
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
         ports:
-            - '3001:8080'
+            - 8080:80
+        environment:
+            - PMA_ARBITRARY=1
     mariadb:
         image: 'mariadb:10.3'
         ports:
