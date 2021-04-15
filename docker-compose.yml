@@ -26,6 +26,8 @@ services:
             - MYSQL_USER=user
             - MYSQL_PASSWORD=password
             - MYSQL_RANDOM_ROOT_PASSWORD=yes
+        volumes:
+            - './db_data:/var/lib/mysql'
     composer:
         image: 'composer:1.8'
         command: install
