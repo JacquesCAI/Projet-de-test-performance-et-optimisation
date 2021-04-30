@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class VaccinController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('jwt.verify');
+    }
+
     /**
      * Display a listing of the resource.
      *
