@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Vaccins;
+use App\Http\Controllers\VaccinController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,18 +16,18 @@ use App\Models\Vaccins;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::resources([
+    'vaccins' => VaccinController::class
+]);
 
-Route::get('/test', function() {
-    $vaccin = new Vaccins();
-    $vaccin->code_region = "0";
-    $vaccin->nom_reg = "GDP";
-    $vaccin->type_de_vaccin = "Pfizer";
-    $vaccin->nb_ucd = 1165;
-    $vaccin->nb_doses = 68486;
-    $vaccin->date = new \Carbon\Carbon();
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
 
-    $vaccin->save();
+], function ($router) {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
 });
