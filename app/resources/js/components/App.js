@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Link} from "react-router-dom";
 import Index from "./Index";
 import Login from "./Login";
+import Register from "./Register";
 import AuthService from "../services/AuthService";
 
 class App extends React.Component {
@@ -39,7 +40,7 @@ class App extends React.Component {
                                                     <Link className="nav-link active" aria-current="page" to="/login">Se connecter</Link>
                                                 </li>
                                                 <li className="nav-item">
-                                                    <a className="nav-link active" aria-current="page" href="#">S'inscrire</a>
+                                                    <Link className="nav-link active" aria-current="page" to="/register">S'inscrire</Link>
                                                 </li>
                                             </ul>) :
                                             (<ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
@@ -55,6 +56,7 @@ class App extends React.Component {
                 <main>
                     <Route exact path="/" component={Index}/>
                     <Route path="/login" component={Login}/>
+                    <Route path="/register" component={Register}/>
                 </main>
 
             </BrowserRouter>
