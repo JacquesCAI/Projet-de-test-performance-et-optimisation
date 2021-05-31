@@ -12,3 +12,9 @@ DB_PASSWORD=password
 
 ## Install Vendor
 docker-compose run composer install
+docker-compose exec php-fpm php artisan key:generate
+docker-compose exec php-fpm php artisan jwt:secret
+
+## Compiler le React en même temps
+docker-compose run node npm install
+docker-compose run node npm run watch
