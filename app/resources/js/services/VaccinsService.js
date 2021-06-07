@@ -18,7 +18,6 @@ class VaccinsService {
         }
         formBody.push(encodeURIComponent("token")+"="+encodeURIComponent(token));
         formBody = formBody.join("&");
-        console.log(formBody);
         const res = await fetch('/api/vaccins/'+vaccin.id+"", {
             method: "PUT",
             headers: {
