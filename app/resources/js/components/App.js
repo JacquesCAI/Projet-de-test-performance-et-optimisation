@@ -42,7 +42,8 @@ class App extends React.Component {
                                                 <li className="nav-item">
                                                     <Link className="nav-link active" aria-current="page" to="/register">S'inscrire</Link>
                                                 </li>
-                                            </ul>) :
+                                            </ul>)
+                                            :
                                             (<ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
                                                 <li className="nav-item">
                                                     <a className="nav-link active" aria-current="page" href="#" onClick={this.logout}>Se déconnecter</a>

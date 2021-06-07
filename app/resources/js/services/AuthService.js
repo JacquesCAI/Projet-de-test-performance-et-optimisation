@@ -58,11 +58,15 @@ class AuthService {
                 method: "POST",
                 body: formData
             }).then(res => res.json());
-            localStorage.removeItem("user");
-            location.href = "/";
+            this.deleteSession();
         } catch (e) {
             alert("Echec de dé connexion");
         }
+    }
+
+    static deleteSession() {
+        localStorage.removeItem("user");
+        location.href = "/";
     }
 }
 
