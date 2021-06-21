@@ -2202,7 +2202,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/VaccinsService */ "./resources/js/services/VaccinsService.js");
-/* harmony import */ var _ModalEdit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ModalEdit */ "./resources/js/components/ModalEdit.js");
+/* harmony import */ var _ModalVaccin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ModalVaccin */ "./resources/js/components/ModalVaccin.js");
 /* harmony import */ var _css_modal_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../css/modal.css */ "./resources/css/modal.css");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -2266,33 +2266,107 @@ var Index = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "closeModal", function () {
       _this.setState({
-        vaccinToEdit: null
+        modal: false
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "saveVaccin", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.editVaccin(_this.state.vaccinToEdit, _this.state.user.token);
+    _defineProperty(_assertThisInitialized(_this), "saveVaccin", /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(vaccinToSave) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!(_this.state.modal == true)) {
+                  _context.next = 6;
+                  break;
+                }
 
-            case 2:
-              _this.state.vaccins[_this.state.vaccinToEdit.index] = _this.state.vaccinToEdit;
+                _context.next = 3;
+                return _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.postVaccin(vaccinToSave, _this.state.user.token);
 
-              _this.setState({
-                vaccins: _this.state.vaccins,
-                vaccinToEdit: null
-              });
+              case 3:
+                _this.setState({});
 
-            case 4:
-            case "end":
-              return _context.stop();
+                _context.next = 10;
+                break;
+
+              case 6:
+                if (!_this.state.modal) {
+                  _context.next = 10;
+                  break;
+                }
+
+                _context.next = 9;
+                return _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.editVaccin(vaccinToSave, _this.state.user.token);
+
+              case 9:
+                _this.setState({
+                  vaccins: _this.state.vaccins.map(function (vaccin) {
+                    return vaccin.id == vaccinToSave.id ? vaccinToSave : vaccin;
+                  }),
+                  filteredVaccins: _this.state.filteredVaccins.map(function (vaccin) {
+                    return vaccin.id == vaccinToSave.id ? vaccinToSave : vaccin;
+                  }),
+                  modal: false
+                });
+
+              case 10:
+              case "end":
+                return _context.stop();
+            }
           }
-        }
-      }, _callee);
-    })));
+        }, _callee);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+
+    _defineProperty(_assertThisInitialized(_this), "deleteVaccin", /*#__PURE__*/function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(vaccinToDelete) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (window.confirm('Etes-vous sûr de vouloir supprimer ce vaccin ?')) {
+                  _context2.next = 2;
+                  break;
+                }
+
+                return _context2.abrupt("return");
+
+              case 2:
+                _context2.next = 4;
+                return _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.deleteVaccin(vaccinToDelete, _this.state.user.token);
+
+              case 4:
+                if (!_context2.sent) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                _this.setState({
+                  vaccins: _this.state.vaccins.filter(function (vaccin) {
+                    return vaccin.id != vaccinToDelete.id;
+                  }),
+                  filteredVaccins: _this.state.filteredVaccins.filter(function (vaccin) {
+                    return vaccin.id != vaccinToDelete.id;
+                  })
+                });
+
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      return function (_x2) {
+        return _ref2.apply(this, arguments);
+      };
+    }());
 
     _defineProperty(_assertThisInitialized(_this), "handleChangeModal", function (event) {
       _this.state.vaccinToEdit[event.target.name] = event.target.value;
@@ -2336,21 +2410,24 @@ var Index = /*#__PURE__*/function (_React$Component) {
       vaccins: [],
       filteredVaccins: [],
       vaccinToEdit: null,
-      keyWord: ""
+      keyWord: "",
+      modal: false
     };
 
     if (_this.state.user != null) {
       _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.getVaccins(_this.state.user.token).then(function (vaccins) {
-        var vaccinsWithIndex = vaccins.map(function (vaccin, index) {
-          return _objectSpread(_objectSpread({}, vaccin), {}, {
-            index: index
+        if (vaccins) {
+          var vaccinsWithIndex = vaccins.map(function (vaccin, index) {
+            return _objectSpread(_objectSpread({}, vaccin), {}, {
+              index: index
+            });
           });
-        });
 
-        _this.setState({
-          vaccins: vaccinsWithIndex,
-          filteredVaccins: vaccinsWithIndex
-        });
+          _this.setState({
+            vaccins: vaccinsWithIndex,
+            filteredVaccins: vaccinsWithIndex
+          });
+        }
       });
     }
 
@@ -2358,10 +2435,17 @@ var Index = /*#__PURE__*/function (_React$Component) {
   }
 
   _createClass(Index, [{
-    key: "displayModal",
-    value: function displayModal(vaccin) {
+    key: "displayEdit",
+    value: function displayEdit(vaccin) {
       this.setState({
-        vaccinToEdit: _objectSpread({}, vaccin)
+        modal: _objectSpread({}, vaccin)
+      });
+    }
+  }, {
+    key: "displayNew",
+    value: function displayNew() {
+      this.setState({
+        modal: true
       });
     }
   }, {
@@ -2393,7 +2477,12 @@ var Index = /*#__PURE__*/function (_React$Component) {
                 children: " Liste des vaccins "
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "card-body",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+                  onClick: function onClick() {
+                    return _this2.displayNew();
+                  },
+                  children: "Ajouter un vaccin"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                   children: ["Mot cl\xE9 : ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
                     type: "text",
                     value: this.state.keyWord,
@@ -2435,14 +2524,20 @@ var Index = /*#__PURE__*/function (_React$Component) {
                           children: vaccin.nb_doses
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
                           children: vaccin.date
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("td", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
                             type: "button",
                             value: "Editer",
                             onClick: function onClick() {
-                              return _this2.displayModal(vaccin);
+                              return _this2.displayEdit(vaccin);
                             }
-                          })
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+                            type: "button",
+                            value: "Supprimer",
+                            onClick: function onClick() {
+                              return _this2.deleteVaccin(vaccin);
+                            }
+                          })]
                         })]
                       }, vaccin.id);
                     })
@@ -2451,11 +2546,10 @@ var Index = /*#__PURE__*/function (_React$Component) {
               })]
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ModalEdit__WEBPACK_IMPORTED_MODULE_3__.default, {
-          saveVaccin: this.saveVaccin,
-          vaccinToEdit: this.state.vaccinToEdit,
-          closeModal: this.closeModal,
-          handleChangeModal: this.handleChangeModal
+        }), this.state.modal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ModalVaccin__WEBPACK_IMPORTED_MODULE_3__.default, {
+          modal: this.state.modal,
+          onSubmit: this.saveVaccin,
+          closeModal: this.closeModal
         })]
       });
     }
@@ -2634,10 +2728,10 @@ var Login = /*#__PURE__*/function (_React$Component) {
 
 /***/ }),
 
-/***/ "./resources/js/components/ModalEdit.js":
-/*!**********************************************!*\
-  !*** ./resources/js/components/ModalEdit.js ***!
-  \**********************************************/
+/***/ "./resources/js/components/ModalVaccin.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/ModalVaccin.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -2648,6 +2742,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2669,25 +2767,53 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
 
-var ModalEdit = /*#__PURE__*/function (_React$Component) {
-  _inherits(ModalEdit, _React$Component);
 
-  var _super = _createSuper(ModalEdit);
+var ModalVaccin = /*#__PURE__*/function (_React$Component) {
+  _inherits(ModalVaccin, _React$Component);
 
-  function ModalEdit(props) {
-    _classCallCheck(this, ModalEdit);
+  var _super = _createSuper(ModalVaccin);
 
-    return _super.call(this, props);
+  function ModalVaccin(props) {
+    var _this;
+
+    _classCallCheck(this, ModalVaccin);
+
+    _this = _super.call(this, props);
+
+    _defineProperty(_assertThisInitialized(_this), "handleChange", function (e) {
+      _this.setState({
+        vaccin: _objectSpread(_objectSpread({}, _this.state.vaccin), {}, _defineProperty({}, e.target.name, e.target.value))
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "submit", function (e) {
+      e.preventDefault();
+
+      _this.props.onSubmit(_this.state.vaccin);
+    });
+
+    _this.state = {
+      vaccin: _this.props.modal == true ? {
+        code_region: '',
+        nom_reg: '',
+        type_de_vaccin: '',
+        nb_ucd: '',
+        nb_doses: ''
+      } : _this.props.modal
+    };
+    console.log(_this.state);
+    return _this;
   }
 
-  _createClass(ModalEdit, [{
+  _createClass(ModalVaccin, [{
     key: "render",
     value: function render() {
-      return this.props.vaccinToEdit != null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
         className: "modal display-block",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("section", {
           className: "modal-main",
@@ -2696,48 +2822,50 @@ var ModalEdit = /*#__PURE__*/function (_React$Component) {
             type: "button",
             onClick: this.props.closeModal,
             children: "Fermer"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h1", {
-            children: ["Editer le vaccin N\xB0 ", this.props.vaccinToEdit.id]
+          }), this.props.modal == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h1", {
+            children: "Cr\xE9er le vaccin"
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h1", {
+            children: ["Editer le vaccin N\xB0 ", this.state.vaccin.id]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("form", {
+            onSubmit: this.submit,
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
               children: ["Code de la r\xE9gion :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
                 type: "text",
                 name: "code_region",
-                value: this.props.vaccinToEdit.code_region,
-                onChange: this.props.handleChangeModal
+                value: this.state.vaccin.code_region,
+                onChange: this.handleChange
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
               children: ["Nom de la region :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
                 type: "text",
                 name: "nom_reg",
-                value: this.props.vaccinToEdit.nom_reg,
-                onChange: this.props.handleChangeModal
+                value: this.state.vaccin.nom_reg,
+                onChange: this.handleChange
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
               children: ["Type de vaccin :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
                 type: "text",
                 name: "type_de_vaccin",
-                value: this.props.vaccinToEdit.type_de_vaccin,
-                onChange: this.props.handleChangeModal
+                value: this.state.vaccin.type_de_vaccin,
+                onChange: this.handleChange
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
               children: ["Nombre d'UCD :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
                 type: "text",
                 name: "nb_ucd",
-                value: this.props.vaccinToEdit.nb_ucd,
-                onChange: this.props.handleChangeModal
+                value: this.state.vaccin.nb_ucd,
+                onChange: this.handleChange
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("label", {
               children: ["Nombre de doses :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
                 type: "text",
                 name: "nb_doses",
-                value: this.props.vaccinToEdit.nb_doses,
-                onChange: this.props.handleChangeModal
+                value: this.state.vaccin.nb_doses,
+                onChange: this.handleChange
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("input", {
-              type: "button",
-              value: "Sauvegarder",
-              onClick: this.props.saveVaccin
+              type: "submit",
+              value: "Sauvegarder"
             })]
           })]
         })
@@ -2745,10 +2873,10 @@ var ModalEdit = /*#__PURE__*/function (_React$Component) {
     }
   }]);
 
-  return ModalEdit;
+  return ModalVaccin;
 }(react__WEBPACK_IMPORTED_MODULE_0__.Component);
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModalEdit);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModalVaccin);
 
 /***/ }),
 
@@ -3332,11 +3460,93 @@ var VaccinsService = /*#__PURE__*/function () {
     value: function checkSession(res) {
       if (res.status == "Token is Expired" || res.status == "Authorization Token not found") {
         _AuthService__WEBPACK_IMPORTED_MODULE_1__.default.deleteSession();
-        return [];
+        return false;
       }
 
       return res;
     }
+  }, {
+    key: "postVaccin",
+    value: function () {
+      var _postVaccin = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(vaccin, token) {
+        var formBody, attr, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                formBody = [];
+
+                for (attr in vaccin) {
+                  if (attr !== "id") {
+                    formBody.push(encodeURIComponent(attr) + "=" + encodeURIComponent(vaccin[attr]));
+                  }
+                }
+
+                formBody.push(encodeURIComponent("token") + "=" + encodeURIComponent(token));
+                formBody = formBody.join("&");
+                _context3.next = 6;
+                return fetch('/api/vaccins/', {
+                  method: "POST",
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                  },
+                  body: formBody
+                }).then(function (res) {
+                  return res.json();
+                });
+
+              case 6:
+                res = _context3.sent;
+                return _context3.abrupt("return", this.checkSession(res));
+
+              case 8:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function postVaccin(_x4, _x5) {
+        return _postVaccin.apply(this, arguments);
+      }
+
+      return postVaccin;
+    }()
+  }, {
+    key: "deleteVaccin",
+    value: function () {
+      var _deleteVaccin = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(vaccin, token) {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return fetch('/api/vaccins/' + vaccin.id + "?token=" + token + "", {
+                  method: "DELETE"
+                }).then(function (res) {
+                  return res.json();
+                });
+
+              case 2:
+                res = _context4.sent;
+                return _context4.abrupt("return", this.checkSession(res));
+
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function deleteVaccin(_x6, _x7) {
+        return _deleteVaccin.apply(this, arguments);
+      }
+
+      return deleteVaccin;
+    }()
   }]);
 
   return VaccinsService;

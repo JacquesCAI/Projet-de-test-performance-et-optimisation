@@ -1,6 +1,6 @@
 import React from 'react';
 import VaccinsService from '../services/VaccinsService';
-import ModalEdit from "./ModalEdit";
+import ModalVaccin from "./ModalVaccin";
 
 import '../../css/modal.css';
 
@@ -13,33 +13,74 @@ class Index extends React.Component {
             vaccins: [],
             filteredVaccins: [],
             vaccinToEdit: null,
-            keyWord: ""
+            keyWord: "",
+            modal: false
         }
         if (this.state.user != null) {
             VaccinsService.getVaccins(this.state.user.token)
                 .then(vaccins => {
-                    let vaccinsWithIndex = vaccins.map((vaccin, index) => {
-                        return {...vaccin, index}
-                    });
-                    this.setState( {
-                        vaccins: vaccinsWithIndex, filteredVaccins: vaccinsWithIndex
-                    });
+                    if (vaccins) {
+                        let vaccinsWithIndex = vaccins.map((vaccin, index) => {
+                            return {...vaccin, index}
+                        });
+                        this.setState( {
+                            vaccins: vaccinsWithIndex, filteredVaccins: vaccinsWithIndex
+                        });
+                    }
                 })
         }
     }
 
-    displayModal(vaccin) {
-        this.setState({vaccinToEdit: {...vaccin}});
+    displayEdit(vaccin) {
+        this.setState({modal: {...vaccin}});
+    }
+
+    displayNew(){
+        this.setState({modal: true});
     }
 
     closeModal = () => {
-        this.setState({vaccinToEdit: null});
+        this.setState({modal: false});
     }
 
-    saveVaccin = async () => {
-        await VaccinsService.editVaccin(this.state.vaccinToEdit,this.state.user.token);
-        this.state.vaccins[this.state.vaccinToEdit.index] = this.state.vaccinToEdit
-        this.setState({vaccins: this.state.vaccins, vaccinToEdit: null});
+    saveVaccin = async (vaccinToSave) => {
+        if (this.state.modal == true) {
+            await VaccinsService.postVaccin(vaccinToSave, this.state.user.token);
+
+            this.setState({
+
+            })
+        } else if (this.state.modal){
+            await VaccinsService.editVaccin(vaccinToSave,this.state.user.token);
+
+            this.setState({
+                    vaccins: this.state.vaccins.map(vaccin => 
+                        vaccin.id == vaccinToSave.id ?
+                        vaccinToSave : vaccin
+                        ),
+                    filteredVaccins: this.state.filteredVaccins.map(vaccin => 
+                        vaccin.id == vaccinToSave.id ?
+                        vaccinToSave : vaccin
+                        ),
+                    modal: false
+                });
+        }
+        
+    }
+
+    deleteVaccin = async (vaccinToDelete) => {
+        if (!window.confirm('Etes-vous sûr de vouloir supprimer ce vaccin ?')) {
+            return 
+        }
+        if(
+            await VaccinsService.deleteVaccin(vaccinToDelete, this.state.user.token)
+        ) {
+            this.setState({vaccins: this.state.vaccins.filter((vaccin) => 
+                vaccin.id != vaccinToDelete.id
+            ),filteredVaccins: this.state.filteredVaccins.filter((vaccin) => 
+                vaccin.id != vaccinToDelete.id
+        ) })
+        }
     }
 
     handleChangeModal = (event) => {
@@ -76,6 +117,7 @@ class Index extends React.Component {
                         <div className="card text-center">
                             <div className="card-header"> Liste des vaccins </div>
                             <div className="card-body">
+                                <button onClick={() => this.displayNew()}>Ajouter un vaccin</button>
                                 <div>
                                     Mot clé : <input type="text" value={this.state.keyWord} onChange={this.handleChangeKeyword}/>
                                 </div>
@@ -131,7 +173,8 @@ class Index extends React.Component {
                                                         {vaccin.date}
                                                     </td>
                                                     <td>
-                                                        <input type="button" value="Editer" onClick={() => this.displayModal(vaccin)}/>
+                                                        <input type="button" value="Editer" onClick={() => this.displayEdit(vaccin)}/>
+                                                        <input type='button' value="Supprimer" onClick={() => this.deleteVaccin(vaccin)}/>
                                                     </td>
                                                 </tr>
                                             ) }
@@ -142,7 +185,7 @@ class Index extends React.Component {
                         }
                     </div>
                 </div>
-                <ModalEdit saveVaccin={this.saveVaccin} vaccinToEdit={this.state.vaccinToEdit} closeModal={this.closeModal} handleChangeModal={this.handleChangeModal}></ModalEdit>
+                {this.state.modal && <ModalVaccin modal={this.state.modal} onSubmit={this.saveVaccin} closeModal={this.closeModal}></ModalVaccin>}
             </div>
         );
     }
