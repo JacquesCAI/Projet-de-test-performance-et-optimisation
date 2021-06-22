@@ -45,11 +45,28 @@ class Index extends React.Component {
 
     saveVaccin = async (vaccinToSave) => {
         if (this.state.modal == true) {
-            await VaccinsService.postVaccin(vaccinToSave, this.state.user.token);
-
-            this.setState({
-
-            })
+            const res = await VaccinsService.postVaccin(vaccinToSave, this.state.user.token);
+            if (res) {
+                this.setState({
+                    vaccins: [
+                        ...this.state.vaccins,
+                        {
+                            ...vaccinToSave,
+                            id: res.id,
+                            created_at: res.created_at
+                        }
+                    ],
+                    filteredVaccins: this.checkVaccinKeyword(vaccinToSave, this.state.keyWord) ?
+                        [...this.state.filteredVaccins,
+                            {
+                                ...vaccinToSave,
+                                id: res.id,
+                                created_at: res.created_at
+                            }
+                        ] : this.state.filteredVaccins,
+                    modal: false,
+                })
+            }
         } else if (this.state.modal){
             await VaccinsService.editVaccin(vaccinToSave,this.state.user.token);
 
@@ -90,15 +107,19 @@ class Index extends React.Component {
 
     handleChangeKeyword = (event) => {
         const keyWord = event.target.value;
-        const fields = ["id","code_region","nom_reg","type_de_vaccin","nb_ucd","nb_doses","date"];
         this.setState({keyWord, filteredVaccins: keyWord !== "" ? this.state.vaccins.filter(vaccin => {
-            for (const field of fields) {
-                if (vaccin[field].toString().toLowerCase() !== vaccin[field].toString().toLowerCase().replace(keyWord.toLowerCase(),"")) {
-                    return true;
-                }
-            }
-            return false;
+            return this.checkVaccinKeyword(vaccin, keyWord);
         }) : this.state.vaccins});
+    }
+
+    checkVaccinKeyword = (vaccin, keyWord) => {
+
+        for (const field in vaccin) {
+            if (vaccin[field].toString().toLowerCase() !== vaccin[field].toString().toLowerCase().replace(keyWord.toLowerCase(),"")) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -170,7 +191,7 @@ class Index extends React.Component {
                                                         {vaccin.nb_doses}
                                                     </td>
                                                     <td>
-                                                        {vaccin.date}
+                                                        {vaccin.created_at}
                                                     </td>
                                                     <td>
                                                         <input type="button" value="Editer" onClick={() => this.displayEdit(vaccin)}/>

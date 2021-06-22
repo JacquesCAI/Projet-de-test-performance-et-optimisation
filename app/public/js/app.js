@@ -2207,17 +2207,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -2272,12 +2278,13 @@ var Index = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "saveVaccin", /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(vaccinToSave) {
+        var res;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 if (!(_this.state.modal == true)) {
-                  _context.next = 6;
+                  _context.next = 7;
                   break;
                 }
 
@@ -2285,21 +2292,35 @@ var Index = /*#__PURE__*/function (_React$Component) {
                 return _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.postVaccin(vaccinToSave, _this.state.user.token);
 
               case 3:
-                _this.setState({});
+                res = _context.sent;
 
-                _context.next = 10;
+                if (res) {
+                  _this.setState({
+                    vaccins: [].concat(_toConsumableArray(_this.state.vaccins), [_objectSpread(_objectSpread({}, vaccinToSave), {}, {
+                      id: res.id,
+                      created_at: res.created_at
+                    })]),
+                    filteredVaccins: _this.checkVaccinKeyword(vaccinToSave, _this.state.keyWord) ? [].concat(_toConsumableArray(_this.state.filteredVaccins), [_objectSpread(_objectSpread({}, vaccinToSave), {}, {
+                      id: res.id,
+                      created_at: res.created_at
+                    })]) : _this.state.filteredVaccins,
+                    modal: false
+                  });
+                }
+
+                _context.next = 11;
                 break;
 
-              case 6:
+              case 7:
                 if (!_this.state.modal) {
-                  _context.next = 10;
+                  _context.next = 11;
                   break;
                 }
 
-                _context.next = 9;
+                _context.next = 10;
                 return _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.editVaccin(vaccinToSave, _this.state.user.token);
 
-              case 9:
+              case 10:
                 _this.setState({
                   vaccins: _this.state.vaccins.map(function (vaccin) {
                     return vaccin.id == vaccinToSave.id ? vaccinToSave : vaccin;
@@ -2310,7 +2331,7 @@ var Index = /*#__PURE__*/function (_React$Component) {
                   modal: false
                 });
 
-              case 10:
+              case 11:
               case "end":
                 return _context.stop();
             }
@@ -2378,31 +2399,23 @@ var Index = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "handleChangeKeyword", function (event) {
       var keyWord = event.target.value;
-      var fields = ["id", "code_region", "nom_reg", "type_de_vaccin", "nb_ucd", "nb_doses", "date"];
 
       _this.setState({
         keyWord: keyWord,
         filteredVaccins: keyWord !== "" ? _this.state.vaccins.filter(function (vaccin) {
-          var _iterator = _createForOfIteratorHelper(fields),
-              _step;
-
-          try {
-            for (_iterator.s(); !(_step = _iterator.n()).done;) {
-              var field = _step.value;
-
-              if (vaccin[field].toString().toLowerCase() !== vaccin[field].toString().toLowerCase().replace(keyWord.toLowerCase(), "")) {
-                return true;
-              }
-            }
-          } catch (err) {
-            _iterator.e(err);
-          } finally {
-            _iterator.f();
-          }
-
-          return false;
+          return _this.checkVaccinKeyword(vaccin, keyWord);
         }) : _this.state.vaccins
       });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "checkVaccinKeyword", function (vaccin, keyWord) {
+      for (var field in vaccin) {
+        if (vaccin[field].toString().toLowerCase() !== vaccin[field].toString().toLowerCase().replace(keyWord.toLowerCase(), "")) {
+          return true;
+        }
+      }
+
+      return false;
     });
 
     _this.state = {
@@ -2523,7 +2536,7 @@ var Index = /*#__PURE__*/function (_React$Component) {
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
                           children: vaccin.nb_doses
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
-                          children: vaccin.date
+                          children: vaccin.created_at
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("td", {
                           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
                             type: "button",
