@@ -37,7 +37,6 @@ class VaccinController extends Controller
             'type_de_vaccin' => $request->type_de_vaccin,
             'nb_ucd' => $request->nb_ucd,
             'nb_doses' => $request->nb_doses,
-            'date' => $request->date,
         ]);
         return Vaccins::create($vaccin->toArray());
     }
@@ -67,7 +66,6 @@ class VaccinController extends Controller
         $vaccin->type_de_vaccin = $request->type_de_vaccin;
         $vaccin->nb_ucd = $request->nb_ucd;
         $vaccin->nb_doses = $request->nb_doses;
-        $vaccin->date = $request->date;
 
         $vaccin->update();
         return $vaccin;

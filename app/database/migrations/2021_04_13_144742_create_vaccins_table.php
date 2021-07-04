@@ -20,7 +20,8 @@ class CreateVaccinsTable extends Migration
             $table->string('type_de_vaccin');
             $table->integer('nb_ucd');
             $table->integer('nb_doses');
-            $table->date('date');
+            $table->date('created_at');
+            $table->date('updated_at');
         });
     }
 
