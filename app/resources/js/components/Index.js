@@ -71,30 +71,30 @@ class Index extends React.Component {
             await VaccinsService.editVaccin(vaccinToSave,this.state.user.token);
 
             this.setState({
-                    vaccins: this.state.vaccins.map(vaccin => 
+                    vaccins: this.state.vaccins.map(vaccin =>
                         vaccin.id == vaccinToSave.id ?
                         vaccinToSave : vaccin
                         ),
-                    filteredVaccins: this.state.filteredVaccins.map(vaccin => 
+                    filteredVaccins: this.state.filteredVaccins.map(vaccin =>
                         vaccin.id == vaccinToSave.id ?
                         vaccinToSave : vaccin
                         ),
                     modal: false
                 });
         }
-        
+
     }
 
     deleteVaccin = async (vaccinToDelete) => {
         if (!window.confirm('Etes-vous sûr de vouloir supprimer ce vaccin ?')) {
-            return 
+            return
         }
         if(
             await VaccinsService.deleteVaccin(vaccinToDelete, this.state.user.token)
         ) {
-            this.setState({vaccins: this.state.vaccins.filter((vaccin) => 
+            this.setState({vaccins: this.state.vaccins.filter((vaccin) =>
                 vaccin.id != vaccinToDelete.id
-            ),filteredVaccins: this.state.filteredVaccins.filter((vaccin) => 
+            ),filteredVaccins: this.state.filteredVaccins.filter((vaccin) =>
                 vaccin.id != vaccinToDelete.id
         ) })
         }
@@ -113,7 +113,6 @@ class Index extends React.Component {
     }
 
     checkVaccinKeyword = (vaccin, keyWord) => {
-
         for (const field in vaccin) {
             if (vaccin[field].toString().toLowerCase() !== vaccin[field].toString().toLowerCase().replace(keyWord.toLowerCase(),"")) {
                 return true;
