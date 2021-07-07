@@ -41,3 +41,6 @@ services:
         volumes:
             - ./app:/home/node/app
         command: "npm start"
+
+    k6:
+        image: "loadimpact/k6:latest"
