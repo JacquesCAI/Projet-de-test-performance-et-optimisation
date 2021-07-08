@@ -36,7 +36,7 @@ export default () => {
         },
     };
 
-    const vaccins = http.get(`${base_url}/api/vaccins`, authHeaders).json();
+    const vaccins = http.get(`${base_url}/api/allVaccins`, authHeaders).json();
     check(vaccins, { 'retrieved vaccins': (obj) => obj.length > 0 });
 
     sleep(1);

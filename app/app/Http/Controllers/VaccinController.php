@@ -17,11 +17,43 @@ class VaccinController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function index()
     {
         return DB::table('vaccins')->paginate(100);
+    }
+
+    /**
+     * Get all vaccins
+     *
+     * @return \App\Models\Vaccins[]
+     */
+    public function all() {
+        return Vaccins::all();
+    }
+
+
+    /**
+     * Get slowly 2000 vaccins by sorting them with bubblesort
+     *
+     * @return \App\Models\Vaccins[]
+     */
+    public function slowlyGetVaccins() {
+        $vaccins = Vaccins::all()->take(2000);
+        do {
+            $sorted = true;
+            for ($j=0;$j<count($vaccins)-1;$j++) {
+                if ($vaccins[$j]->id < $vaccins[$j+1]->id) { // DESC sort
+                    $sorted = false;
+                    $tmp = $vaccins[$j];
+                    $vaccins[$j] = $vaccins[$j+1];
+                    $vaccins[$j+1] = $tmp;
+                }
+            }
+            } while (!$sorted);
+
+        return $vaccins;
     }
 
     /**

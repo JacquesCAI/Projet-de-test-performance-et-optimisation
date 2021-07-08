@@ -17,8 +17,10 @@ use App\Http\Controllers\VaccinController;
 */
 
 Route::resources([
-    'vaccins' => VaccinController::class
+    'vaccins' => VaccinController::class,
 ]);
+Route::get('/slowlyVaccins', [VaccinController::class, 'slowlyGetVaccins']);
+Route::get('/allVaccins', [VaccinController::class, 'all']);
 
 Route::group([
     'middleware' => 'api',
