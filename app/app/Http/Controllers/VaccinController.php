@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Vaccins;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VaccinController extends Controller
 {
@@ -20,7 +21,7 @@ class VaccinController extends Controller
      */
     public function index()
     {
-        return Vaccins::all();
+        return DB::table('vaccins')->paginate(100);
     }
 
     /**

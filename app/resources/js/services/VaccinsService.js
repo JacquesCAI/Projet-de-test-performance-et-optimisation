@@ -1,9 +1,9 @@
 import AuthService from "./AuthService";
 
 class VaccinsService {
-    static async getVaccins(token)
+    static async getVaccins(token,pagination)
     {
-        const res = await fetch('/api/vaccins/?token='+token, {
+        const res = await fetch('/api/vaccins/?page='+pagination+'&token='+token, {
             method: "GET",
         }).then(res => res.json());
 

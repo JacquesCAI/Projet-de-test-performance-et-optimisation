@@ -2351,23 +2351,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -2415,6 +2403,10 @@ var Index = /*#__PURE__*/function (_React$Component) {
 
     _this = _super.call(this, props);
 
+    _defineProperty(_assertThisInitialized(_this), "handlePaginate", function (e) {
+      _this.getVaccins(e.target.value);
+    });
+
     _defineProperty(_assertThisInitialized(_this), "closeVaccinToShow", function () {
       _this.setState({
         vaccinToShow: false
@@ -2435,7 +2427,7 @@ var Index = /*#__PURE__*/function (_React$Component) {
             switch (_context.prev = _context.next) {
               case 0:
                 if (!(_this.state.editOrCreate == true)) {
-                  _context.next = 7;
+                  _context.next = 6;
                   break;
                 }
 
@@ -2444,43 +2436,22 @@ var Index = /*#__PURE__*/function (_React$Component) {
 
               case 3:
                 res = _context.sent;
-
-                if (res) {
-                  _this.setState({
-                    vaccins: [].concat(_toConsumableArray(_this.state.vaccins), [_objectSpread(_objectSpread({}, vaccinToSave), {}, {
-                      id: res.id,
-                      created_at: res.created_at
-                    })]),
-                    filteredVaccins: _this.checkVaccinKeyword(vaccinToSave, _this.state.keyWord) ? [].concat(_toConsumableArray(_this.state.filteredVaccins), [_objectSpread(_objectSpread({}, vaccinToSave), {}, {
-                      id: res.id,
-                      created_at: res.created_at
-                    })]) : _this.state.filteredVaccins,
-                    editOrCreate: false
-                  });
-                }
-
-                _context.next = 11;
+                _context.next = 9;
                 break;
 
-              case 7:
+              case 6:
                 if (!_this.state.editOrCreate) {
-                  _context.next = 11;
+                  _context.next = 9;
                   break;
                 }
 
-                _context.next = 10;
+                _context.next = 9;
                 return _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.editVaccin(vaccinToSave, _this.state.user.token);
 
-              case 10:
-                _this.setState({
-                  vaccins: _this.state.vaccins.map(function (vaccin) {
-                    return vaccin.id == vaccinToSave.id ? vaccinToSave : vaccin;
-                  }),
-                  filteredVaccins: _this.state.filteredVaccins.map(function (vaccin) {
-                    return vaccin.id == vaccinToSave.id ? vaccinToSave : vaccin;
-                  }),
-                  editOrCreate: false
-                });
+              case 9:
+                _this.state.editOrCreate = false;
+
+                _this.getVaccins(_this.state.pagination);
 
               case 11:
               case "end":
@@ -2518,14 +2489,7 @@ var Index = /*#__PURE__*/function (_React$Component) {
                   break;
                 }
 
-                _this.setState({
-                  vaccins: _this.state.vaccins.filter(function (vaccin) {
-                    return vaccin.id != vaccinToDelete.id;
-                  }),
-                  filteredVaccins: _this.state.filteredVaccins.filter(function (vaccin) {
-                    return vaccin.id != vaccinToDelete.id;
-                  })
-                });
+                _this.getVaccins(_this.state.vaccins.length > 1 || _this.state.pagination === 1 ? _this.state.pagination : _this.state.pagination - 1);
 
               case 6:
               case "end":
@@ -2576,30 +2540,48 @@ var Index = /*#__PURE__*/function (_React$Component) {
       vaccinToEdit: null,
       keyWord: "",
       editOrCreate: false,
-      vaccinToShow: false
+      vaccinToShow: false,
+      pagination: 1,
+      paginations: [1]
     };
 
     if (_this.state.user != null) {
-      _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.getVaccins(_this.state.user.token).then(function (vaccins) {
-        if (vaccins) {
-          var vaccinsWithIndex = vaccins.map(function (vaccin, index) {
-            return _objectSpread(_objectSpread({}, vaccin), {}, {
-              index: index
-            });
-          });
-
-          _this.setState({
-            vaccins: vaccinsWithIndex,
-            filteredVaccins: vaccinsWithIndex
-          });
-        }
-      });
+      _this.getVaccins(_this.state.pagination);
     }
 
     return _this;
   }
 
   _createClass(Index, [{
+    key: "getVaccins",
+    value: function getVaccins(pagination) {
+      var _this2 = this;
+
+      _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.getVaccins(this.state.user.token, pagination).then(function (res) {
+        if (res) {
+          var vaccins = res.data;
+          var vaccinsWithIndex = vaccins.map(function (vaccin, index) {
+            return _objectSpread(_objectSpread({}, vaccin), {}, {
+              index: index
+            });
+          });
+          var nbPaginations = Math.floor(res.total / res.per_page) + (res.total % res.per_page !== 0 ? 1 : 0);
+          var paginations = [];
+
+          for (var i = 1; i <= nbPaginations; i++) {
+            paginations.push(i);
+          }
+
+          _this2.setState({
+            vaccins: vaccinsWithIndex,
+            filteredVaccins: vaccinsWithIndex,
+            pagination: pagination,
+            paginations: paginations
+          });
+        }
+      });
+    }
+  }, {
     key: "displayEdit",
     value: function displayEdit(vaccin) {
       this.setState({
@@ -2616,10 +2598,10 @@ var Index = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "showVaccin",
     value: function showVaccin(vaccinId) {
-      var _this2 = this;
+      var _this3 = this;
 
       _services_VaccinsService__WEBPACK_IMPORTED_MODULE_2__.default.getOneVaccin(this.state.user.token, vaccinId).then(function (vaccin) {
-        return vaccin && _this2.setState({
+        return vaccin && _this3.setState({
           vaccinToShow: vaccin
         });
       });
@@ -2627,7 +2609,7 @@ var Index = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
         className: "container mt-5",
@@ -2653,9 +2635,20 @@ var Index = /*#__PURE__*/function (_React$Component) {
                 children: " Liste des vaccins "
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
                 className: "card-body",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+                  children: "Page :"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("select", {
+                  value: this.state.pagination,
+                  onChange: this.handlePaginate,
+                  children: this.state.paginations.map(function (page) {
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("option", {
+                      value: page,
+                      children: page
+                    }, page);
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
                   onClick: function onClick() {
-                    return _this3.displayNew();
+                    return _this4.displayNew();
                   },
                   children: "Ajouter un vaccin"
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
@@ -2705,19 +2698,19 @@ var Index = /*#__PURE__*/function (_React$Component) {
                             type: "button",
                             value: "Editer",
                             onClick: function onClick() {
-                              return _this3.displayEdit(vaccin);
+                              return _this4.displayEdit(vaccin);
                             }
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
                             type: "button",
                             value: "Supprimer",
                             onClick: function onClick() {
-                              return _this3.deleteVaccin(vaccin);
+                              return _this4.deleteVaccin(vaccin);
                             }
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
                             type: "button",
                             value: "Voir",
                             onClick: function onClick() {
-                              return _this3.showVaccin(vaccin.id);
+                              return _this4.showVaccin(vaccin.id);
                             }
                           })]
                         })]
@@ -3577,14 +3570,14 @@ var VaccinsService = /*#__PURE__*/function () {
   _createClass(VaccinsService, null, [{
     key: "getVaccins",
     value: function () {
-      var _getVaccins = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(token) {
+      var _getVaccins = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(token, pagination) {
         var res;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return fetch('/api/vaccins/?token=' + token, {
+                return fetch('/api/vaccins/?page=' + pagination + '&token=' + token, {
                   method: "GET"
                 }).then(function (res) {
                   return res.json();
@@ -3602,7 +3595,7 @@ var VaccinsService = /*#__PURE__*/function () {
         }, _callee, this);
       }));
 
-      function getVaccins(_x) {
+      function getVaccins(_x, _x2) {
         return _getVaccins.apply(this, arguments);
       }
 
@@ -3636,7 +3629,7 @@ var VaccinsService = /*#__PURE__*/function () {
         }, _callee2, this);
       }));
 
-      function getOneVaccin(_x2, _x3) {
+      function getOneVaccin(_x3, _x4) {
         return _getOneVaccin.apply(this, arguments);
       }
 
@@ -3684,7 +3677,7 @@ var VaccinsService = /*#__PURE__*/function () {
         }, _callee3, this);
       }));
 
-      function editVaccin(_x4, _x5) {
+      function editVaccin(_x5, _x6) {
         return _editVaccin.apply(this, arguments);
       }
 
@@ -3742,7 +3735,7 @@ var VaccinsService = /*#__PURE__*/function () {
         }, _callee4, this);
       }));
 
-      function postVaccin(_x6, _x7) {
+      function postVaccin(_x7, _x8) {
         return _postVaccin.apply(this, arguments);
       }
 
@@ -3776,7 +3769,7 @@ var VaccinsService = /*#__PURE__*/function () {
         }, _callee5, this);
       }));
 
-      function deleteVaccin(_x8, _x9) {
+      function deleteVaccin(_x9, _x10) {
         return _deleteVaccin.apply(this, arguments);
       }
 

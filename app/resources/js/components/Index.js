@@ -15,21 +15,40 @@ class Index extends React.Component {
             vaccinToEdit: null,
             keyWord: "",
             editOrCreate: false,
-            vaccinToShow: false
+            vaccinToShow: false,
+            pagination: 1,
+            paginations: [1]
         }
         if (this.state.user != null) {
-            VaccinsService.getVaccins(this.state.user.token)
-                .then(vaccins => {
-                    if (vaccins) {
-                        let vaccinsWithIndex = vaccins.map((vaccin, index) => {
-                            return {...vaccin, index}
-                        });
-                        this.setState( {
-                            vaccins: vaccinsWithIndex, filteredVaccins: vaccinsWithIndex
-                        });
-                    }
-                })
+            this.getVaccins(this.state.pagination);
         }
+    }
+
+    getVaccins(pagination) {
+        VaccinsService.getVaccins(this.state.user.token,pagination)
+            .then(res => {
+                if (res) {
+                    const vaccins = res.data;
+                    let vaccinsWithIndex = vaccins.map((vaccin, index) => {
+                        return {...vaccin, index}
+                    });
+                    const nbPaginations = Math.floor(res.total/res.per_page)+(res.total%res.per_page !== 0 ? 1 : 0);
+                    let paginations = [];
+                    for (let i=1;i<=nbPaginations;i++) {
+                        paginations.push(i);
+                    }
+                    this.setState( {
+                        vaccins: vaccinsWithIndex,
+                        filteredVaccins: vaccinsWithIndex,
+                        pagination,
+                        paginations
+                    });
+                }
+            })
+    }
+
+    handlePaginate = (e) => {
+        this.getVaccins(e.target.value);
     }
 
     displayEdit(vaccin) {
@@ -55,42 +74,11 @@ class Index extends React.Component {
     saveVaccin = async (vaccinToSave) => {
         if (this.state.editOrCreate == true) {
             const res = await VaccinsService.postVaccin(vaccinToSave, this.state.user.token);
-            if (res) {
-                this.setState({
-                    vaccins: [
-                        ...this.state.vaccins,
-                        {
-                            ...vaccinToSave,
-                            id: res.id,
-                            created_at: res.created_at
-                        }
-                    ],
-                    filteredVaccins: this.checkVaccinKeyword(vaccinToSave, this.state.keyWord) ?
-                        [...this.state.filteredVaccins,
-                            {
-                                ...vaccinToSave,
-                                id: res.id,
-                                created_at: res.created_at
-                            }
-                        ] : this.state.filteredVaccins,
-                    editOrCreate: false,
-                })
-            }
         } else if (this.state.editOrCreate){
             await VaccinsService.editVaccin(vaccinToSave,this.state.user.token);
-
-            this.setState({
-                vaccins: this.state.vaccins.map(vaccin =>
-                        vaccin.id == vaccinToSave.id ?
-                        vaccinToSave : vaccin
-                        ),
-                filteredVaccins: this.state.filteredVaccins.map(vaccin =>
-                        vaccin.id == vaccinToSave.id ?
-                        vaccinToSave : vaccin
-                        ),
-                editOrCreate: false
-                });
         }
+        this.state.editOrCreate = false
+        this.getVaccins(this.state.pagination);
 
     }
 
@@ -101,11 +89,7 @@ class Index extends React.Component {
         if(
             await VaccinsService.deleteVaccin(vaccinToDelete, this.state.user.token)
         ) {
-            this.setState({vaccins: this.state.vaccins.filter((vaccin) =>
-                vaccin.id != vaccinToDelete.id
-            ),filteredVaccins: this.state.filteredVaccins.filter((vaccin) =>
-                vaccin.id != vaccinToDelete.id
-        ) })
+            this.getVaccins((this.state.vaccins.length > 1 || this.state.pagination === 1) ? this.state.pagination : this.state.pagination-1);
         }
     }
 
@@ -146,6 +130,14 @@ class Index extends React.Component {
                         <div className="card text-center">
                             <div className="card-header"> Liste des vaccins </div>
                             <div className="card-body">
+                                <label>Page :</label>
+                                <select value={this.state.pagination} onChange={this.handlePaginate}>
+                                    {
+                                        this.state.paginations.map(page =>
+                                            <option key={page} value={page}>{page}</option>
+                                        )
+                                    }
+                                </select><br/>
                                 <button onClick={() => this.displayNew()}>Ajouter un vaccin</button>
                                 <div>
                                     Mot clé : <input type="text" value={this.state.keyWord} onChange={this.handleChangeKeyword}/>
