@@ -1,23 +1,22 @@
 import React from 'react';
 
-class ModalVaccin extends React.Component {
+class FormVaccin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            vaccin: this.props.modal == true ?
+            vaccin: this.props.defaultValues === true ?
                 {
                     code_region: '',
                     nom_reg: '',
                     type_de_vaccin: '',
                     nb_ucd: '',
                     nb_doses: ''
-                } : this.props.modal
+                } : this.props.defaultValues
         }
-        console.log(this.state)
     }
 
     handleChange = e =>{
-        this.setState({vaccin: 
+        this.setState({vaccin:
             {...this.state.vaccin, [e.target.name]: e.target.value}})
     }
 
@@ -28,13 +27,9 @@ class ModalVaccin extends React.Component {
 
     render() {
         return (
-            
-        <div className="modal display-block">
-            <section className="modal-main">
-                <button className="button-close" type="button" onClick={this.props.closeModal}>
-                    Fermer
-                </button>
-                {this.props.modal == true ? <h1>Créer le vaccin</h1>
+
+        <>
+            {this.props.defaultValues === true ? <h1>Créer un vaccin</h1>
                 : <h1>Editer le vaccin N° { this.state.vaccin.id}</h1>}
                 <form onSubmit={this.submit}>
                     <label>
@@ -64,9 +59,8 @@ class ModalVaccin extends React.Component {
                     <br/>
                     <input type="submit" value="Sauvegarder"/>
                 </form>
-            </section>
-        </div>); 
+        </>);
     }
 }
 
-export default ModalVaccin;
+export default FormVaccin;

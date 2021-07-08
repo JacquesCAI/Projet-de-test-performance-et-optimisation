@@ -9,6 +9,16 @@ class VaccinsService {
 
         return this.checkSession(res);
     }
+
+    static async getOneVaccin(token,vaccinId)
+    {
+        const res = await fetch('/api/vaccins/'+vaccinId+'?token='+token, {
+            method: "GET",
+        }).then(res => res.json());
+
+        return this.checkSession(res);
+    }
+
     static async editVaccin(vaccin,token) {
         let formBody = [];
         for (const attr in vaccin) {

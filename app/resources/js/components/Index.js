@@ -1,8 +1,8 @@
 import React from 'react';
 import VaccinsService from '../services/VaccinsService';
-import ModalVaccin from "./ModalVaccin";
-
-import '../../css/modal.css';
+import FormVaccin from "./FormVaccin";
+import Modal from "./Modal";
+import ShowVaccin from "./ShowVaccin";
 
 class Index extends React.Component {
 
@@ -14,7 +14,8 @@ class Index extends React.Component {
             filteredVaccins: [],
             vaccinToEdit: null,
             keyWord: "",
-            modal: false
+            editOrCreate: false,
+            vaccinToShow: false
         }
         if (this.state.user != null) {
             VaccinsService.getVaccins(this.state.user.token)
@@ -32,19 +33,27 @@ class Index extends React.Component {
     }
 
     displayEdit(vaccin) {
-        this.setState({modal: {...vaccin}});
+        this.setState({editOrCreate: {...vaccin}});
     }
 
     displayNew(){
-        this.setState({modal: true});
+        this.setState({editOrCreate: true});
     }
 
-    closeModal = () => {
-        this.setState({modal: false});
+    showVaccin(vaccinId) {
+        VaccinsService.getOneVaccin(this.state.user.token,vaccinId)
+            .then(vaccin => vaccin && this.setState({vaccinToShow: vaccin}));
+    }
+    closeVaccinToShow = () => {
+        this.setState({vaccinToShow: false});
+    }
+
+    closeFormModal = () => {
+        this.setState({editOrCreate: false});
     }
 
     saveVaccin = async (vaccinToSave) => {
-        if (this.state.modal == true) {
+        if (this.state.editOrCreate == true) {
             const res = await VaccinsService.postVaccin(vaccinToSave, this.state.user.token);
             if (res) {
                 this.setState({
@@ -64,22 +73,22 @@ class Index extends React.Component {
                                 created_at: res.created_at
                             }
                         ] : this.state.filteredVaccins,
-                    modal: false,
+                    editOrCreate: false,
                 })
             }
-        } else if (this.state.modal){
+        } else if (this.state.editOrCreate){
             await VaccinsService.editVaccin(vaccinToSave,this.state.user.token);
 
             this.setState({
-                    vaccins: this.state.vaccins.map(vaccin =>
+                vaccins: this.state.vaccins.map(vaccin =>
                         vaccin.id == vaccinToSave.id ?
                         vaccinToSave : vaccin
                         ),
-                    filteredVaccins: this.state.filteredVaccins.map(vaccin =>
+                filteredVaccins: this.state.filteredVaccins.map(vaccin =>
                         vaccin.id == vaccinToSave.id ?
                         vaccinToSave : vaccin
                         ),
-                    modal: false
+                editOrCreate: false
                 });
         }
 
@@ -195,6 +204,7 @@ class Index extends React.Component {
                                                     <td>
                                                         <input type="button" value="Editer" onClick={() => this.displayEdit(vaccin)}/>
                                                         <input type='button' value="Supprimer" onClick={() => this.deleteVaccin(vaccin)}/>
+                                                        <input type="button" value="Voir" onClick={() => this.showVaccin(vaccin.id)}/>
                                                     </td>
                                                 </tr>
                                             ) }
@@ -205,7 +215,19 @@ class Index extends React.Component {
                         }
                     </div>
                 </div>
-                {this.state.modal && <ModalVaccin modal={this.state.modal} onSubmit={this.saveVaccin} closeModal={this.closeModal}></ModalVaccin>}
+                {
+                    this.state.vaccinToShow &&
+                        <Modal closeModal={this.closeVaccinToShow}>
+                            <ShowVaccin vaccin={this.state.vaccinToShow}>
+                            </ShowVaccin>
+                        </Modal>
+                }
+                {this.state.editOrCreate &&
+                    <Modal closeModal={this.closeFormModal}>
+                        <FormVaccin defaultValues={this.state.editOrCreate} onSubmit={this.saveVaccin}>
+                        </FormVaccin>
+                    </Modal>
+                }
             </div>
         );
     }
