@@ -10,6 +10,8 @@ services:
         build: docker/php
         volumes:
             - './app:/usr/share/nginx/html'
+        env_file:
+            -   .env_blackfire
     phpmyadmin:
         image: phpmyadmin
         restart: always
@@ -17,6 +19,7 @@ services:
             - 8080:80
         environment:
             - PMA_ARBITRARY=1
+
     mariadb:
         image: 'mariadb:10.3'
         ports:
